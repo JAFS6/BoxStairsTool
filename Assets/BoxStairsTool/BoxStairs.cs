@@ -56,6 +56,7 @@ namespace BoxStairsTool
             // Create the new childs
 
             float stepHeight = StairsHeight / StepsNumber;
+            float halfStepHeight = stepHeight / 2;
             float stepDepth = StairsDepth / StepsNumber;
 
             for (int i = 0; i < StepsNumber; i++)
@@ -64,7 +65,7 @@ namespace BoxStairsTool
                 Step.name = "Step " + i;
                 Step.transform.SetParent(Root.transform);
                 Step.transform.localScale = new Vector3(StairsWidth, stepHeight, StairsDepth - (i * stepDepth));
-                Step.transform.localPosition = new Vector3(0, i * stepHeight, i * (stepDepth / 2));
+                Step.transform.localPosition = new Vector3(0, halfStepHeight + (i * stepHeight), i * (stepDepth / 2));
                 Step.transform.localRotation = Quaternion.identity;
 
                 if (StairsMaterial != null)
