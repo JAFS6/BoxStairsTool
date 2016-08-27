@@ -7,6 +7,7 @@ namespace BoxStairsTool
     [CanEditMultipleObjects]
     public sealed class BoxStairsEditor : Editor
     {
+        SerializedProperty Pivot;
         SerializedProperty StairsWidth;
         SerializedProperty StairsHeight;
         SerializedProperty StairsDepth;
@@ -23,6 +24,7 @@ namespace BoxStairsTool
 
         private void OnEnable()
         {
+            Pivot = serializedObject.FindProperty("Pivot");
             StairsWidth = serializedObject.FindProperty("StairsWidth");
             StairsHeight = serializedObject.FindProperty("StairsHeight");
             StairsDepth = serializedObject.FindProperty("StairsDepth");
@@ -35,6 +37,7 @@ namespace BoxStairsTool
             serializedObject.Update();
 
             EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(Pivot);
             EditorGUILayout.PropertyField(StairsWidth);
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);

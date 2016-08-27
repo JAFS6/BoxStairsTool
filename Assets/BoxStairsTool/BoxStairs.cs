@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace BoxStairsTool
 {
+    enum PivotType : byte { Downstairs, Upstairs };
+
     [ExecuteInEditMode]
     public sealed class BoxStairs : MonoBehaviour
     {
+        [SerializeField]
+        private PivotType Pivot;
         [SerializeField]
         private float StairsWidth;
         [SerializeField]
@@ -79,8 +83,19 @@ namespace BoxStairsTool
                 Step.name = "Step " + i;
                 Step.transform.SetParent(Root.transform);
                 Step.transform.localScale = new Vector3(StairsWidth, stepHeight, StairsDepth - (i * stepDepth));
-                Step.transform.localPosition = new Vector3(0, halfStepHeight + (i * stepHeight), halfStairsDepth + (i * halfStepDepth));
                 Step.transform.localRotation = Quaternion.identity;
+
+                switch (Pivot)
+                {
+                    case PivotType.Downstairs:
+                        Step.transform.localPosition = new Vector3(0, halfStepHeight + (i * stepHeight), halfStairsDepth + (i * halfStepDepth));
+                        break;
+
+                    case PivotType.Upstairs:
+                        int fixedIndex = StepsNumber - 1 - i;
+                        Step.transform.localPosition = new Vector3(0, -halfStepHeight - (fixedIndex * stepHeight), -halfStepDepth - (fixedIndex * halfStepDepth));
+                        break;
+                }
 
                 if (StairsMaterial != null)
                 {
