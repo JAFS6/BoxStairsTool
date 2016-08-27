@@ -19,6 +19,8 @@ namespace BoxStairsTool
 
         private GameObject Root;
 
+        private const float MinimumLength = 0.000000001f; // Minimum Length for a length unit
+
         private void Start()
         {
             Root = this.gameObject;
@@ -37,6 +39,16 @@ namespace BoxStairsTool
 
         public void CreateStairs()
         {
+            // Validate parameters
+            StairsWidth = GuaranteeMinimumLength(StairsWidth);
+            StairsHeight = GuaranteeMinimumLength(StairsHeight);
+            StairsDepth = GuaranteeMinimumLength(StairsDepth);
+
+            if (StepsNumber < 1)
+            {
+                StepsNumber = 1;
+            }
+
             // If any child has been created, destroy it
 
             List<GameObject> children = new List<GameObject>();
@@ -80,6 +92,19 @@ namespace BoxStairsTool
                     }
                 }
             }
+        }
+
+        /*
+         * This methods checks a value which represents a length unit, if the value is below a MinimumLength the returned value will be MinimumLength, in another case it returns the value.
+         */
+        private float GuaranteeMinimumLength (float value)
+        {
+            if (value < MinimumLength)
+            {
+                return MinimumLength;
+            }
+
+            return value;
         }
     }
 }
