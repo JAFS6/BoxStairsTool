@@ -42,6 +42,7 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);
             EditorGUILayout.PropertyField(StepsNumber);
+            EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
             EditorGUILayout.PropertyField(StairsMaterial);
             serializedObject.ApplyModifiedProperties();
             
