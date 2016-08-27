@@ -4,6 +4,7 @@ using UnityEditor;
 namespace BoxStairsTool
 {
     [CustomEditor(typeof(BoxStairs))]
+    [CanEditMultipleObjects]
     public sealed class BoxStairsEditor : Editor
     {
         SerializedProperty StairsWidth;
@@ -43,9 +44,13 @@ namespace BoxStairsTool
             
             if (EditorGUI.EndChangeCheck())
             {
-                BoxStairs script = (BoxStairs)target;
+                BoxStairs script;
 
-                script.CreateStairs();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    script = (BoxStairs)targets[i];
+                    script.CreateStairs();
+                }
             }
         }
     }
