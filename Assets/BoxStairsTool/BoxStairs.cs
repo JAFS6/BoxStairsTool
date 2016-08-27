@@ -65,6 +65,7 @@ namespace BoxStairsTool
                 Step.transform.SetParent(Root.transform);
                 Step.transform.localScale = new Vector3(StairsWidth, stepHeight, StairsDepth - (i * stepDepth));
                 Step.transform.localPosition = new Vector3(0, i * stepHeight, i * (stepDepth / 2));
+                Step.transform.localRotation = Quaternion.identity;
 
                 if (StairsMaterial != null)
                 {
