@@ -64,7 +64,7 @@ namespace BoxStairsTool
                 Step.name = "Step " + i;
                 Step.transform.SetParent(Root.transform);
                 Step.transform.localScale = new Vector3(StairsWidth, stepHeight, StairsDepth - (i * stepDepth));
-                Step.transform.position = new Vector3(0, i * stepHeight, i * (stepDepth / 2));
+                Step.transform.localPosition = new Vector3(0, i * stepHeight, i * (stepDepth / 2));
 
                 if (StairsMaterial != null)
                 {
