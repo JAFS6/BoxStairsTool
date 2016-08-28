@@ -1,5 +1,6 @@
 # BoxStairs Tool
-[![License](http://img.shields.io/:license-MIT-blue.svg)](https://raw.githubusercontent.com/JAFS6/BoxStairsTool/master/LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://raw.githubusercontent.com/JAFS6/BoxStairsTool/master/LICENSE)
+![](https://img.shields.io/badge/Unity3D%20version-5.4.0-lightgrey.svg)
 
 Unity3D editor tool to create simple stairs made out of boxes.
 
@@ -14,6 +15,9 @@ Click the **BoxStairs Tool menu > Create BoxStairs** button to create a default 
 With the object selected, **choose** where do you want to be placed the **pivot** of the object, **edit** the Stairs **Width**, **Height** and **Depth** parameters to set the volume which will contain the stairs, and the **Steps Number** parameter to set how many steps will have the stairs. Finally, **assign** a material to the Stairs **Material** slot. Play with the parameters until you get the desired design. If you want to **finalize the object**'s edition ability, click the finalize button and it will remain on the hierarchy as a group of boxes under a empty root.
 
 This tool accepts multi object editing.
+
+# Compatibility
+This tool has been developed and tested on Unity3D version 5.4.0.
 
 # License
 This tool is licensed under the [MIT license](https://opensource.org/licenses/MIT).
