@@ -29,6 +29,7 @@ namespace BoxStairsTool
     enum PivotType : byte { Downstairs, Upstairs };
 
     [ExecuteInEditMode]
+    [SelectionBase]
     public sealed class BoxStairs : MonoBehaviour
     {
         [SerializeField]
