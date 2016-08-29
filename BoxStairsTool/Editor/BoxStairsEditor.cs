@@ -37,12 +37,40 @@ namespace BoxStairsTool
         SerializedProperty StepsNumber;
         SerializedProperty StairsMaterial;
 
+        private const string DefaultName = "BoxStairs";
+
         [MenuItem("BoxStairs Tool/Create BoxStairs")]
         private static void CreateBoxStairsGO()
         {
-            GameObject BoxStairs = new GameObject("BoxStairs");
-            BoxStairs.AddComponent<BoxStairs>();
-            Selection.activeGameObject = BoxStairs;
+            if (Selection.transforms.Length > 1)
+            {
+                if (EditorUtility.DisplayDialog("Create several "+ DefaultName + "?", "You have SEVERAL GameObject SELECTED. Are you sure you want to create one "+ DefaultName + " for each selected GameObject?", "Yes", "No"))
+                {
+                    GameObject[] selection = new GameObject[Selection.transforms.Length];
+
+                    for (int i = 0; i < Selection.transforms.Length; i++)
+                    {
+                        GameObject BoxStairs = new GameObject(DefaultName);
+                        BoxStairs.AddComponent<BoxStairs>();
+                        BoxStairs.transform.SetParent(Selection.transforms[i]);
+                        BoxStairs.transform.localPosition = new Vector3(0, 0, 0);
+                        selection[i] = BoxStairs;
+                    }
+                }
+            }
+            else
+            {
+                GameObject BoxStairs = new GameObject(DefaultName);
+                BoxStairs.AddComponent<BoxStairs>();
+
+                if (Selection.transforms.Length == 1)
+                {
+                    BoxStairs.transform.SetParent(Selection.transforms[0]);
+                    BoxStairs.transform.localPosition = new Vector3(0,0,0);
+                }
+
+                Selection.activeGameObject = BoxStairs;
+            }
         }
 
         private void OnEnable()
