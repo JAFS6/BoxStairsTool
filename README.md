@@ -19,5 +19,11 @@ This tool accepts multi object editing.
 # Compatibility
 This tool has been developed and tested on Unity3D version 5.4.0.
 
+# Troubleshooting
+If you have any problem, question, suggestion or bug report, [open an issue](https://github.com/JAFS6/BoxStairsTool/issues/new) and we will try to solve it.
+
 # License
 This tool is licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Author
+[Juan Antonio Fajardo Serrano](https://es.linkedin.com/in/jafs6)
