@@ -57,6 +57,8 @@ namespace BoxStairsTool
                         selection[i] = BoxStairs;
                         Undo.RegisterCreatedObjectUndo(BoxStairs, "Create BoxStairs");
                     }
+                    
+                    Selection.objects = selection;
                 }
             }
             else
