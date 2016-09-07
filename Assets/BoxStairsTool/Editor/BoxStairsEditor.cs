@@ -55,6 +55,7 @@ namespace BoxStairsTool
                         BoxStairs.transform.SetParent(Selection.transforms[i]);
                         BoxStairs.transform.localPosition = new Vector3(0, 0, 0);
                         selection[i] = BoxStairs;
+                        Undo.RegisterCreatedObjectUndo(BoxStairs, "Create BoxStairs");
                     }
                 }
             }
@@ -70,6 +71,7 @@ namespace BoxStairsTool
                 }
 
                 Selection.activeGameObject = BoxStairs;
+                Undo.RegisterCreatedObjectUndo(BoxStairs, "Create BoxStairs");
             }
         }
 
@@ -104,6 +106,8 @@ namespace BoxStairsTool
                 for (int i = 0; i < targets.Length; i++)
                 {
                     script = (BoxStairs)targets[i];
+                    Undo.SetCurrentGroupName("BoxStairs parameter change");
+                    Undo.undoRedoPerformed += script.CreateStairs;
                     script.CreateStairs();
                 }
             }
