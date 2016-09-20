@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Tool moved to the GameObject/3D Object menu. Now it appears on the hierarchy's context menu too.
+- README file updated according to the version features.
 
 ### Fixed
 - Undo after change some parameter didn't update the BoxStairs object.
