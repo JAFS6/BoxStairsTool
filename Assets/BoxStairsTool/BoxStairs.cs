@@ -43,6 +43,8 @@ namespace BoxStairsTool
         [SerializeField]
         private int StepsNumber;
         [SerializeField]
+        private bool ThreeSides;
+        [SerializeField]
         private Material StairsMaterial;
 
         private GameObject Root;
@@ -62,6 +64,7 @@ namespace BoxStairsTool
             StairsHeight = 0.5f;
             StairsDepth = 1.0f;
             StepsNumber = 2;
+            ThreeSides = false;
             StairsMaterial = null;
         }
 
@@ -100,13 +103,17 @@ namespace BoxStairsTool
             float halfStepHeight = stepHeight / 2;
             float stepDepth = StairsDepth / StepsNumber;
             float halfStepDepth = stepDepth / 2;
+            float stepWidth = StairsWidth / StepsNumber;
 
             for (int i = 0; i < StepsNumber; i++)
             {
                 GameObject Step = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Step.name = "Step " + i;
                 Step.transform.SetParent(Root.transform);
-                Step.transform.localScale = new Vector3(StairsWidth, stepHeight, StairsDepth - (i * stepDepth));
+                
+                float width = (ThreeSides) ? StairsWidth - (i * stepWidth) : StairsWidth;
+                
+                Step.transform.localScale = new Vector3(width, stepHeight, StairsDepth - (i * stepDepth));
                 Step.transform.localRotation = Quaternion.identity;
 
                 switch (Pivot)
