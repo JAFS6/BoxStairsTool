@@ -39,7 +39,7 @@ namespace BoxStairsTool
 
         private const string DefaultName = "BoxStairs";
 
-        [MenuItem("BoxStairs Tool/Create BoxStairs")]
+        [MenuItem("GameObject/3D Object/BoxStairs")]
         private static void CreateBoxStairsGO()
         {
             if (Selection.transforms.Length > 1)
