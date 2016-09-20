@@ -41,7 +41,7 @@ namespace BoxStairsTool
         private const string DefaultName = "BoxStairs";
 
         [MenuItem("GameObject/3D Object/BoxStairs")]
-        private static void CreateBoxStairsGO()
+        private static void CreateBoxStairsGO ()
         {
             if (Selection.transforms.Length > 1)
             {
@@ -58,7 +58,7 @@ namespace BoxStairsTool
                         selection[i] = BoxStairs;
                         Undo.RegisterCreatedObjectUndo(BoxStairs, "Create BoxStairs");
                     }
-                    
+
                     Selection.objects = selection;
                 }
             }
@@ -78,7 +78,7 @@ namespace BoxStairsTool
             }
         }
 
-        private void OnEnable()
+        private void OnEnable ()
         {
             Pivot = serializedObject.FindProperty("Pivot");
             StairsWidth = serializedObject.FindProperty("StairsWidth");
@@ -89,7 +89,7 @@ namespace BoxStairsTool
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
         }
 
-        public override void OnInspectorGUI()
+        public override void OnInspectorGUI ()
         {
             serializedObject.Update();
 
@@ -103,7 +103,7 @@ namespace BoxStairsTool
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
             EditorGUILayout.PropertyField(StairsMaterial);
             serializedObject.ApplyModifiedProperties();
-            
+
             if (EditorGUI.EndChangeCheck())
             {
                 BoxStairs script;
@@ -123,7 +123,7 @@ namespace BoxStairsTool
             }
         }
 
-        private void FinalizeStairs()
+        private void FinalizeStairs ()
         {
             if (EditorUtility.DisplayDialog("Finalize stairs?", "This action can't be undo. Are you sure you want to finalize the stairs?", "Yes", "No"))
             {

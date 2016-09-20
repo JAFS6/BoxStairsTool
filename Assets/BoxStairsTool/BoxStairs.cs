@@ -51,14 +51,14 @@ namespace BoxStairsTool
 
         private const float MinimumLength = 0.000000001f; // Minimum Length for a length unit
 
-        private void Start()
+        private void Start ()
         {
             Root = this.gameObject;
 
             this.CreateStairs();
         }
 
-        public BoxStairs()
+        public BoxStairs ()
         {
             StairsWidth = 1.0f;
             StairsHeight = 0.5f;
@@ -68,7 +68,7 @@ namespace BoxStairsTool
             StairsMaterial = null;
         }
 
-        public void CreateStairs()
+        public void CreateStairs ()
         {
             // Validate parameters
             StairsWidth = GuaranteeMinimumLength(StairsWidth);
@@ -110,9 +110,9 @@ namespace BoxStairsTool
                 GameObject Step = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Step.name = "Step " + i;
                 Step.transform.SetParent(Root.transform);
-                
+
                 float width = (ThreeSides) ? StairsWidth - (i * stepWidth) : StairsWidth;
-                
+
                 Step.transform.localScale = new Vector3(width, stepHeight, StairsDepth - (i * stepDepth));
                 Step.transform.localRotation = Quaternion.identity;
 
