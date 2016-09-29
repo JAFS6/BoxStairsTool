@@ -6,6 +6,9 @@ Unity3D editor tool to create simple stairs made out of boxes.
 
 --------
 
+# Motivation
+Have you ever need to create some stairs made out of boxes for a level mockup or for a simple scene? With this lightweight tool you will create stairs in no time with several options like number of steps, height, width, depth and you could assign a material with the same ease.
+
 # Setup
 **Download** the latest version of **BoxStairs Tool** from the [releases page](https://github.com/JAFS6/BoxStairsTool/releases). You can choose between the zip file or the unity package.
 
