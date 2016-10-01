@@ -125,18 +125,17 @@ namespace BoxStairsTool
 
         private void FinalizeStairs ()
         {
-            if (EditorUtility.DisplayDialog("Finalize stairs?", "This action can't be undo. Are you sure you want to finalize the stairs?", "Yes", "No"))
+            Undo.SetCurrentGroupName("Finalize stairs");
+
+            if (targets.Length == 1)
             {
-                if (targets.Length == 1)
+                Undo.DestroyObjectImmediate(target);
+            }
+            else
+            {
+                for (int i = 0; i < targets.Length; i++)
                 {
-                    DestroyImmediate(target);
-                }
-                else if (EditorUtility.DisplayDialog("Finalize ALL SELECTED stairs?", "You have SEVERAL stairs SELECTED. This action can't be undo. Are you sure you want to finalize the stairs?", "Yes", "No"))
-                {
-                    for (int i = 0; i < targets.Length; i++)
-                    {
-                        DestroyImmediate(targets[i]);
-                    }
+                    Undo.DestroyObjectImmediate(targets[i]);
                 }
             }
         }
