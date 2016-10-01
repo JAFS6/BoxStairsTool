@@ -89,9 +89,9 @@ namespace BoxStairsTool
             List<GameObject> children = new List<GameObject>();
             children.Clear();
 
-            foreach (Transform child in Root.transform)
+            for (int i = 0; i < Root.transform.childCount; i++)
             {
-                children.Add(child.gameObject);
+                children.Add(Root.transform.GetChild(i).gameObject);
             }
 
             while (children.Count > 0)
