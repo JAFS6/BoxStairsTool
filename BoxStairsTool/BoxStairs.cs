@@ -51,6 +51,8 @@ namespace BoxStairsTool
 
         private const float MinimumLength = 0.000000001f; // Minimum Length for a length unit
 
+        private PivotType PreviousPivot;
+
         private void Start ()
         {
             Root = this.gameObject;
@@ -60,6 +62,8 @@ namespace BoxStairsTool
 
         public BoxStairs ()
         {
+            Pivot = PivotType.Downstairs;
+            PreviousPivot = PivotType.Downstairs;
             StairsWidth = 1.0f;
             StairsHeight = 0.5f;
             StairsDepth = 1.0f;
@@ -85,9 +89,9 @@ namespace BoxStairsTool
             List<GameObject> children = new List<GameObject>();
             children.Clear();
 
-            foreach (Transform child in Root.transform)
+            for (int i = 0; i < Root.transform.childCount; i++)
             {
-                children.Add(child.gameObject);
+                children.Add(Root.transform.GetChild(i).gameObject);
             }
 
             while (children.Count > 0)
@@ -137,6 +141,22 @@ namespace BoxStairsTool
                         renderer.material = StairsMaterial;
                     }
                 }
+            }
+
+            if (Pivot != PreviousPivot)
+            {
+                if (Pivot == PivotType.Downstairs && PreviousPivot == PivotType.Upstairs)
+                {
+                    Root.transform.position = Root.transform.position - (StairsDepth * Root.transform.forward);
+                    Root.transform.position = Root.transform.position - (StairsHeight * Root.transform.up);
+                }
+                else // if (Pivot == PivotType.Upstairs && PreviousPivot == PivotType.Downstairs)
+                {
+                    Root.transform.position = Root.transform.position + (StairsDepth * Root.transform.forward);
+                    Root.transform.position = Root.transform.position + (StairsHeight * Root.transform.up);
+                }
+
+                PreviousPivot = Pivot;
             }
         }
 

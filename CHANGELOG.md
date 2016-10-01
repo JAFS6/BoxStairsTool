@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2016-10-01
+### Added
+- Undo for the finalize box stairs feature.
+- Now the object maintain its position when changing the pivot.
+
+### Changed
+- Substituted foreach loops by for loops due to the first ones are slower than the second ones.
+
 ## [1.2.1] - 2016-09-26
 ### Added
 - Motivation section to README file.
