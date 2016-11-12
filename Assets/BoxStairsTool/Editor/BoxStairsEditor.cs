@@ -100,7 +100,33 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(StairsWidth);
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);
-            EditorGUILayout.PropertyField(StepsNumber);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(115));
+            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(30));
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("+1"))
+            {
+                StepsNumber.intValue++;
+            }
+
+            if (GUILayout.Button("+10"))
+            {
+                StepsNumber.intValue += 10;
+            }
+
+            if (GUILayout.Button("-1"))
+            {
+                StepsNumber.intValue--;
+            }
+
+            if (GUILayout.Button("-10"))
+            {
+                StepsNumber.intValue -= 10;
+            }
+
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
             EditorGUILayout.PropertyField(StairsMaterial);
