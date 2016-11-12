@@ -37,6 +37,7 @@ namespace BoxStairsTool
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
         SerializedProperty StairsMaterial;
+        SerializedProperty StepsMaterials;
 
         private const string DefaultName = "BoxStairs";
 
@@ -87,6 +88,7 @@ namespace BoxStairsTool
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
+            StepsMaterials = serializedObject.FindProperty("StepsMaterials");
         }
 
         public override void OnInspectorGUI ()
@@ -98,10 +100,42 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(StairsWidth);
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);
-            EditorGUILayout.PropertyField(StepsNumber);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(115));
+            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(30));
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("+1"))
+            {
+                StepsNumber.intValue++;
+            }
+
+            if (GUILayout.Button("+10"))
+            {
+                StepsNumber.intValue += 10;
+            }
+
+            if (GUILayout.Button("-1"))
+            {
+                StepsNumber.intValue--;
+            }
+
+            if (GUILayout.Button("-10"))
+            {
+                StepsNumber.intValue -= 10;
+            }
+
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
             EditorGUILayout.PropertyField(StairsMaterial);
+            EditorGUILayout.LabelField("Steps Materials", GUILayout.Width(115));
+
+            for (int i = 0; i < StepsMaterials.arraySize; i++)
+            {
+                EditorGUILayout.PropertyField(StepsMaterials.GetArrayElementAtIndex(i));
+            }
             serializedObject.ApplyModifiedProperties();
 
             if (EditorGUI.EndChangeCheck())
