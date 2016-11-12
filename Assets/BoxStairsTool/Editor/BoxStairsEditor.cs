@@ -37,6 +37,7 @@ namespace BoxStairsTool
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
         SerializedProperty StairsMaterial;
+        SerializedProperty StepsMaterials;
 
         private const string DefaultName = "BoxStairs";
 
@@ -87,6 +88,7 @@ namespace BoxStairsTool
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
+            StepsMaterials = serializedObject.FindProperty("StepsMaterials");
         }
 
         public override void OnInspectorGUI ()
@@ -102,6 +104,7 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
             EditorGUILayout.PropertyField(StairsMaterial);
+            EditorGUILayout.PropertyField(StepsMaterials, true);
             serializedObject.ApplyModifiedProperties();
 
             if (EditorGUI.EndChangeCheck())

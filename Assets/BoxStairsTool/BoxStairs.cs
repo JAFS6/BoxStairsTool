@@ -42,10 +42,14 @@ namespace BoxStairsTool
         private float StairsDepth;
         [SerializeField]
         private int StepsNumber;
+        private int LastStepsNumber;
         [SerializeField]
         private bool ThreeSides;
         [SerializeField]
         private Material StairsMaterial;
+        private Material LastStairsMaterial;
+        [SerializeField]
+        private Material[] StepsMaterials;
 
         private GameObject Root;
 
@@ -68,8 +72,16 @@ namespace BoxStairsTool
             StairsHeight = 0.5f;
             StairsDepth = 1.0f;
             StepsNumber = 2;
+            LastStepsNumber = StepsNumber;
             ThreeSides = false;
             StairsMaterial = null;
+            LastStairsMaterial = StairsMaterial;
+            StepsMaterials = new Material[StepsNumber];
+
+            for (int i = 0; i < StepsNumber; i++)
+            {
+                StepsMaterials[i] = null;
+            }
         }
 
         public void CreateStairs ()
@@ -82,6 +94,32 @@ namespace BoxStairsTool
             if (StepsNumber < 1)
             {
                 StepsNumber = 1;
+            }
+
+            if (StepsNumber != LastStepsNumber)
+            {
+                LastStepsNumber = StepsNumber;
+
+                Material[] NewStepsMaterials = new Material[StepsNumber];
+
+                int NewSMIndex = 0, OldSMIndex = 0;
+
+                while (OldSMIndex < StepsMaterials.Length && NewSMIndex < StepsNumber)
+                {
+                    NewStepsMaterials[NewSMIndex] = StepsMaterials[OldSMIndex];
+
+                    NewSMIndex++;
+                    OldSMIndex++;
+                }
+
+                while (NewSMIndex < StepsNumber)
+                {
+                    NewStepsMaterials[NewSMIndex] = StairsMaterial;
+
+                    NewSMIndex++;
+                }
+
+                StepsMaterials = NewStepsMaterials;
             }
 
             // If any child has been created, destroy it
@@ -132,13 +170,27 @@ namespace BoxStairsTool
                         break;
                 }
 
-                if (StairsMaterial != null)
+                if (StairsMaterial != LastStairsMaterial)
                 {
-                    Renderer renderer = Step.GetComponent<Renderer>();
+                    LastStairsMaterial = StairsMaterial;
 
-                    if (renderer != null)
+                    for (int stepIndex = 0; stepIndex < StepsNumber; stepIndex++)
                     {
-                        renderer.material = StairsMaterial;
+                        StepsMaterials[stepIndex] = StairsMaterial;
+                    }
+                }
+
+                Renderer renderer = Step.GetComponent<Renderer>();
+
+                if (renderer != null)
+                {
+                    if (StepsMaterials[i] != null)
+                    {
+                        renderer.material = StepsMaterials[i];
+                    }
+                    else
+                    {
+                        renderer.material = new Material(Shader.Find("Diffuse"));
                     }
                 }
             }
