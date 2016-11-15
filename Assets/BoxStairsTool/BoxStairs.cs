@@ -49,6 +49,8 @@ namespace BoxStairsTool
         private Material StairsMaterial;
         private Material LastStairsMaterial;
         [SerializeField]
+        private bool MaterialsFoldout;
+        [SerializeField]
         private Material[] StepsMaterials;
 
         private GameObject Root;
@@ -76,6 +78,7 @@ namespace BoxStairsTool
             ThreeSides = false;
             StairsMaterial = null;
             LastStairsMaterial = StairsMaterial;
+            bool MaterialsFoldout = false;
             StepsMaterials = new Material[StepsNumber];
 
             for (int i = 0; i < StepsNumber; i++)
