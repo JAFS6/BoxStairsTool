@@ -27,7 +27,6 @@ using UnityEditor;
 namespace BoxStairsTool
 {
     [CustomEditor(typeof(BoxStairs))]
-    [CanEditMultipleObjects]
     public sealed class BoxStairsEditor : Editor
     {
         SerializedProperty Pivot;
