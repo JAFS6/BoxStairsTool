@@ -27,7 +27,6 @@ using UnityEditor;
 namespace BoxStairsTool
 {
     [CustomEditor(typeof(BoxStairs))]
-    [CanEditMultipleObjects]
     public sealed class BoxStairsEditor : Editor
     {
         SerializedProperty Pivot;
@@ -37,9 +36,9 @@ namespace BoxStairsTool
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
         SerializedProperty StairsMaterial;
+        SerializedProperty MaterialsFoldout;
         SerializedProperty StepsMaterials;
 
-        private bool MaterialsFoldout;
         private const string DefaultName = "BoxStairs";
 
         [MenuItem("GameObject/3D Object/BoxStairs")]
@@ -89,8 +88,8 @@ namespace BoxStairsTool
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
+            MaterialsFoldout = serializedObject.FindProperty("MaterialsFoldout");
             StepsMaterials = serializedObject.FindProperty("StepsMaterials");
-            MaterialsFoldout = true;
         }
 
         public override void OnInspectorGUI ()
@@ -131,10 +130,19 @@ namespace BoxStairsTool
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
-            EditorGUILayout.PropertyField(StairsMaterial);
-            MaterialsFoldout = EditorGUILayout.Foldout(MaterialsFoldout, "Steps Materials");
 
-            if (MaterialsFoldout)
+            // Stairs Material
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(StairsMaterial);
+
+            // Steps Materials
+
+            bool materialsfoldout = MaterialsFoldout.boolValue;
+            MaterialsFoldout.boolValue = EditorGUILayout.Foldout(materialsfoldout, "Steps Materials");
+
+            if (MaterialsFoldout.boolValue)
             {
                 for (int i = 0; i < StepsMaterials.arraySize; i++)
                 {

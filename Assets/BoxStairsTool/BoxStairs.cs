@@ -48,6 +48,10 @@ namespace BoxStairsTool
         [SerializeField]
         private Material StairsMaterial;
         private Material LastStairsMaterial;
+        #pragma warning disable 414
+        [SerializeField]
+        private bool MaterialsFoldout; // The value of this property will be used and changed on BoxStairsEditor class
+        #pragma warning restore 414
         [SerializeField]
         private Material[] StepsMaterials;
 
@@ -76,6 +80,7 @@ namespace BoxStairsTool
             ThreeSides = false;
             StairsMaterial = null;
             LastStairsMaterial = StairsMaterial;
+            MaterialsFoldout = false;
             StepsMaterials = new Material[StepsNumber];
 
             for (int i = 0; i < StepsNumber; i++)
