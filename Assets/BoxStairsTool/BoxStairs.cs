@@ -78,7 +78,7 @@ namespace BoxStairsTool
             ThreeSides = false;
             StairsMaterial = null;
             LastStairsMaterial = StairsMaterial;
-            bool MaterialsFoldout = false;
+            MaterialsFoldout = false;
             StepsMaterials = new Material[StepsNumber];
 
             for (int i = 0; i < StepsNumber; i++)
