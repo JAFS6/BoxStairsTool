@@ -131,7 +131,15 @@ namespace BoxStairsTool
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
+
+            // Stairs Material
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
             EditorGUILayout.PropertyField(StairsMaterial);
+
+            // Steps Materials
+
             MaterialsFoldout = EditorGUILayout.Foldout(MaterialsFoldout, "Steps Materials");
 
             if (MaterialsFoldout)
