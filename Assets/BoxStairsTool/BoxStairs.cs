@@ -218,7 +218,9 @@ namespace BoxStairsTool
         }
 
         /*
-         * This methods checks a value which represents a length unit, if the value is below a MinimumLength the returned value will be MinimumLength, in another case it returns the value.
+         * This method checks a value which represents a length unit,
+         * if the value is below a MinimumLength the returned value will be MinimumLength,
+         * in another case it returns the value.
          */
         private float GuaranteeMinimumLength (float value)
         {
