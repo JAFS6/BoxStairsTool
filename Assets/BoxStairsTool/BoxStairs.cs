@@ -73,7 +73,7 @@ namespace BoxStairsTool
             StairsWidth = 1.0f;
             StairsHeight = 0.5f;
             StairsDepth = 1.0f;
-            StepsNumber = 2;
+            StepsNumber = 4;
             LastStepsNumber = StepsNumber;
             ThreeSides = false;
             StairsMaterial = null;
