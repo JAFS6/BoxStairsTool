@@ -29,12 +29,18 @@ namespace BoxStairsTool
     [CustomEditor(typeof(BoxStairs))]
     public sealed class BoxStairsEditor : Editor
     {
+        private const int StepsNumberLabelFieldWidth = 115;
+        private const int StepsNumberValueLabelFieldWidth = 30;
+
         SerializedProperty Pivot;
         SerializedProperty StairsWidth;
         SerializedProperty StairsHeight;
         SerializedProperty StairsDepth;
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
+        SerializedProperty StepsFoldout;
+        SerializedProperty StepsDepth;
+        SerializedProperty KeepCustomDepthValues;
         SerializedProperty StairsMaterial;
         SerializedProperty MaterialsFoldout;
         SerializedProperty StepsMaterials;
@@ -87,6 +93,9 @@ namespace BoxStairsTool
             StairsDepth = serializedObject.FindProperty("StairsDepth");
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
+            StepsFoldout = serializedObject.FindProperty("StepsFoldout");
+            StepsDepth = serializedObject.FindProperty("StepsDepth");
+            KeepCustomDepthValues = serializedObject.FindProperty("KeepCustomDepthValues");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
             MaterialsFoldout = serializedObject.FindProperty("MaterialsFoldout");
             StepsMaterials = serializedObject.FindProperty("StepsMaterials");
@@ -102,8 +111,8 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(115));
-            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(30));
+            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(StepsNumberLabelFieldWidth));
+            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(StepsNumberValueLabelFieldWidth));
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
 
@@ -130,6 +139,27 @@ namespace BoxStairsTool
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
+
+            // Steps depth
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            bool stepsFoldout = StepsFoldout.boolValue;
+            StepsFoldout.boolValue = EditorGUILayout.Foldout(stepsFoldout, "Steps Depth");
+
+            if (StepsFoldout.boolValue)
+            {
+                for (int i = 0; i < StepsDepth.arraySize - 1; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(i));
+                }
+
+                GUI.enabled = false;
+                EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(StepsDepth.arraySize - 1));
+                GUI.enabled = true;
+            }
+
+            EditorGUILayout.PropertyField(KeepCustomDepthValues);
 
             // Stairs Material
 
@@ -164,6 +194,9 @@ namespace BoxStairsTool
                     script.CreateStairs();
                 }
             }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
             if (GUILayout.Button("Finalize stairs"))
             {
