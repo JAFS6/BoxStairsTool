@@ -38,6 +38,9 @@ namespace BoxStairsTool
         SerializedProperty StairsDepth;
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
+        SerializedProperty StepsFoldout;
+        SerializedProperty StepsDepth;
+        SerializedProperty KeepCustomDepthValues;
         SerializedProperty StairsMaterial;
         SerializedProperty MaterialsFoldout;
         SerializedProperty StepsMaterials;
@@ -90,6 +93,9 @@ namespace BoxStairsTool
             StairsDepth = serializedObject.FindProperty("StairsDepth");
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
+            StepsFoldout = serializedObject.FindProperty("StepsFoldout");
+            StepsDepth = serializedObject.FindProperty("StepsDepth");
+            KeepCustomDepthValues = serializedObject.FindProperty("KeepCustomDepthValues");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
             MaterialsFoldout = serializedObject.FindProperty("MaterialsFoldout");
             StepsMaterials = serializedObject.FindProperty("StepsMaterials");
@@ -133,6 +139,27 @@ namespace BoxStairsTool
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(ThreeSides);
             EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
+
+            // Steps depth
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            bool stepsFoldout = StepsFoldout.boolValue;
+            StepsFoldout.boolValue = EditorGUILayout.Foldout(stepsFoldout, "Steps Depth");
+
+            if (StepsFoldout.boolValue)
+            {
+                for (int i = 0; i < StepsDepth.arraySize - 1; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(i));
+                }
+
+                GUI.enabled = false;
+                EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(StepsDepth.arraySize - 1));
+                GUI.enabled = true;
+            }
+
+            EditorGUILayout.PropertyField(KeepCustomDepthValues);
 
             // Stairs Material
 
