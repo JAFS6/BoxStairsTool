@@ -122,6 +122,26 @@ namespace BoxStairsTool
             StairsHeight = GuaranteeMinimumLength(StairsHeight);
             StairsDepth = GuaranteeMinimumLength(StairsDepth);
 
+            BoxCollider VolumeBox = Root.GetComponent<BoxCollider>();
+
+            if (VolumeBox == null)
+            {
+                VolumeBox = Root.AddComponent<BoxCollider>();
+            }
+
+            if (Pivot == PivotType.Downstairs)
+            {
+                VolumeBox.center = new Vector3(0, StairsHeight * 0.5f, StairsDepth * 0.5f);
+            }
+            else
+            {
+                VolumeBox.center = new Vector3(0, -StairsHeight * 0.5f, -StairsDepth * 0.5f);
+            }
+
+            VolumeBox.size = new Vector3(StairsWidth, StairsHeight, StairsDepth);
+
+            VolumeBox.enabled = false;
+
             if (StepsNumber < 1)
             {
                 StepsNumber = 1;
