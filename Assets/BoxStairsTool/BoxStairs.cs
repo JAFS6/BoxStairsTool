@@ -36,6 +36,7 @@ namespace BoxStairsTool
 
         [SerializeField]
         private PivotType Pivot;
+        private PivotType LastPivot;
         [SerializeField]
         private float StairsWidth;
         [SerializeField]
@@ -59,8 +60,6 @@ namespace BoxStairsTool
 
         private GameObject Root;
 
-        private PivotType PreviousPivot;
-
         private void Start ()
         {
             Root = this.gameObject;
@@ -70,7 +69,7 @@ namespace BoxStairsTool
         public BoxStairs ()
         {
             Pivot = PivotType.Downstairs;
-            PreviousPivot = PivotType.Downstairs;
+            LastPivot = PivotType.Downstairs;
             StairsWidth = 1.0f;
             StairsHeight = 0.5f;
             StairsDepth = 1.0f;
@@ -199,20 +198,20 @@ namespace BoxStairsTool
                 }
             }
 
-            if (Pivot != PreviousPivot)
+            if (Pivot != LastPivot)
             {
-                if (Pivot == PivotType.Downstairs && PreviousPivot == PivotType.Upstairs)
+                if (Pivot == PivotType.Downstairs && LastPivot == PivotType.Upstairs)
                 {
                     Root.transform.position = Root.transform.position - (StairsDepth * Root.transform.forward);
                     Root.transform.position = Root.transform.position - (StairsHeight * Root.transform.up);
                 }
-                else // if (Pivot == PivotType.Upstairs && PreviousPivot == PivotType.Downstairs)
+                else // if (Pivot == PivotType.Upstairs && LastPivot == PivotType.Downstairs)
                 {
                     Root.transform.position = Root.transform.position + (StairsDepth * Root.transform.forward);
                     Root.transform.position = Root.transform.position + (StairsHeight * Root.transform.up);
                 }
 
-                PreviousPivot = Pivot;
+                LastPivot = Pivot;
             }
         }
 
