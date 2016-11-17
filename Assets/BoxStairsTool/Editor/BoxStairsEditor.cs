@@ -168,6 +168,9 @@ namespace BoxStairsTool
                 }
             }
 
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
             if (GUILayout.Button("Finalize stairs"))
             {
                 FinalizeStairs();
