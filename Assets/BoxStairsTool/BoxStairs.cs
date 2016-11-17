@@ -32,6 +32,8 @@ namespace BoxStairsTool
     [SelectionBase]
     public sealed class BoxStairs : MonoBehaviour
     {
+        private const float MinimumLength = 0.000000001f; // Minimum Length for a length unit
+
         [SerializeField]
         private PivotType Pivot;
         [SerializeField]
@@ -57,14 +59,11 @@ namespace BoxStairsTool
 
         private GameObject Root;
 
-        private const float MinimumLength = 0.000000001f; // Minimum Length for a length unit
-
         private PivotType PreviousPivot;
 
         private void Start ()
         {
             Root = this.gameObject;
-
             this.CreateStairs();
         }
 
