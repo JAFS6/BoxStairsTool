@@ -29,6 +29,9 @@ namespace BoxStairsTool
     [CustomEditor(typeof(BoxStairs))]
     public sealed class BoxStairsEditor : Editor
     {
+        private const int StepsNumberLabelFieldWidth = 115;
+        private const int StepsNumberValueLabelFieldWidth = 30;
+
         SerializedProperty Pivot;
         SerializedProperty StairsWidth;
         SerializedProperty StairsHeight;
@@ -102,8 +105,8 @@ namespace BoxStairsTool
             EditorGUILayout.PropertyField(StairsHeight);
             EditorGUILayout.PropertyField(StairsDepth);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(115));
-            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(30));
+            EditorGUILayout.LabelField("Steps Number", GUILayout.Width(StepsNumberLabelFieldWidth));
+            EditorGUILayout.LabelField(StepsNumber.intValue+"", GUILayout.Width(StepsNumberValueLabelFieldWidth));
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
 
