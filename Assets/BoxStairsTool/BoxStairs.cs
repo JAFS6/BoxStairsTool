@@ -50,6 +50,7 @@ namespace BoxStairsTool
         private int LastStepsNumber;
         [SerializeField]
         private bool ThreeSides;
+        private bool LastThreeSides;
         #pragma warning disable 414
         [SerializeField]
         private bool StepsFoldout; // The value of this property will be used and changed on BoxStairsEditor class
@@ -89,6 +90,7 @@ namespace BoxStairsTool
             StepsNumber = 4;
             LastStepsNumber = StepsNumber;
             ThreeSides = false;
+            LastThreeSides = ThreeSides;
 
             StepsFoldout = false;
             StepsDepth = new float[StepsNumber];
@@ -122,26 +124,6 @@ namespace BoxStairsTool
             StairsHeight = GuaranteeMinimumLength(StairsHeight);
             StairsDepth = GuaranteeMinimumLength(StairsDepth);
 
-            BoxCollider VolumeBox = Root.GetComponent<BoxCollider>();
-
-            if (VolumeBox == null)
-            {
-                VolumeBox = Root.AddComponent<BoxCollider>();
-            }
-
-            if (Pivot == PivotType.Downstairs)
-            {
-                VolumeBox.center = new Vector3(0, StairsHeight * 0.5f, StairsDepth * 0.5f);
-            }
-            else
-            {
-                VolumeBox.center = new Vector3(0, -StairsHeight * 0.5f, -StairsDepth * 0.5f);
-            }
-
-            VolumeBox.size = new Vector3(StairsWidth, StairsHeight, StairsDepth);
-
-            VolumeBox.enabled = false;
-
             if (StepsNumber < 1)
             {
                 StepsNumber = 1;
@@ -155,7 +137,17 @@ namespace BoxStairsTool
                 StepsMaterials = UpdateStepsMaterialsArray();
             }
 
-            if (ThreeSides && LastStairsWidth != StairsWidth)
+            if (ThreeSides == true && LastThreeSides == false) // If ThreeSides option has been enabled
+            {
+                LastThreeSides = ThreeSides;
+
+                // Force StairsWidth and StairsDepth to have a relation 1:2
+
+                StairsWidth = StairsDepth * 2;
+                LastStairsWidth = StairsWidth;
+            }
+
+            if (ThreeSides && LastStairsWidth != StairsWidth) // If StairsWidth has changed and ThreeSides is enabled
             {
                 LastStairsWidth = StairsWidth;
 
@@ -181,6 +173,8 @@ namespace BoxStairsTool
 
             // Create the new childs
             CreateBoxes();
+            
+            AddSelectionBox();
         }
 
         /*
@@ -495,6 +489,33 @@ namespace BoxStairsTool
                     }
                 }
             }
+        }
+        
+        /*
+         * This method creates a disabled BoxCollider which marks the volume defined by 
+         * StairsWidth, StairsHeight, StairsDepth.
+         */
+        private void AddSelectionBox ()
+        {
+            BoxCollider VolumeBox = Root.GetComponent<BoxCollider>();
+
+            if (VolumeBox == null)
+            {
+                VolumeBox = Root.AddComponent<BoxCollider>();
+            }
+
+            if (Pivot == PivotType.Downstairs)
+            {
+                VolumeBox.center = new Vector3(0, StairsHeight * 0.5f, StairsDepth * 0.5f);
+            }
+            else
+            {
+                VolumeBox.center = new Vector3(0, -StairsHeight * 0.5f, -StairsDepth * 0.5f);
+            }
+
+            VolumeBox.size = new Vector3(StairsWidth, StairsHeight, StairsDepth);
+
+            VolumeBox.enabled = false;
         }
     }
 }
