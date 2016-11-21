@@ -169,7 +169,7 @@ namespace BoxStairsTool
 
                 if (ThreeSides)
                 {
-                    StairsWidth = 2 * StairsDepth;
+                    StairsWidth = StairsDepth * 2;
                     LastStairsWidth = StairsWidth;
                 }
             }
@@ -180,7 +180,7 @@ namespace BoxStairsTool
             ClearChildObjects();
 
             // Create the new childs
-            CreateBoxes ();
+            CreateBoxes();
         }
 
         /*
