@@ -53,7 +53,7 @@ namespace BoxStairsTool
         private bool LastThreeSides;
         #pragma warning disable 414
         [SerializeField]
-        private bool StepsFoldout; // The value of this property will be used and changed on BoxStairsEditor class
+        private bool DepthFoldout; // The value of this property will be used and changed on BoxStairsEditor class
         #pragma warning restore 414
         [SerializeField]
         private float[] StepsDepth;
@@ -92,7 +92,7 @@ namespace BoxStairsTool
             ThreeSides = false;
             LastThreeSides = ThreeSides;
 
-            StepsFoldout = false;
+            DepthFoldout = false;
             StepsDepth = new float[StepsNumber];
             float defaultStepsDepth = StairsDepth / StepsNumber;
 

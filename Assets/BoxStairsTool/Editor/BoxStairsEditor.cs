@@ -38,7 +38,7 @@ namespace BoxStairsTool
         SerializedProperty StairsDepth;
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
-        SerializedProperty StepsFoldout;
+        SerializedProperty DepthFoldout;
         SerializedProperty StepsDepth;
         SerializedProperty KeepCustomDepthValues;
         SerializedProperty StairsMaterial;
@@ -93,7 +93,7 @@ namespace BoxStairsTool
             StairsDepth = serializedObject.FindProperty("StairsDepth");
             StepsNumber = serializedObject.FindProperty("StepsNumber");
             ThreeSides = serializedObject.FindProperty("ThreeSides");
-            StepsFoldout = serializedObject.FindProperty("StepsFoldout");
+            DepthFoldout = serializedObject.FindProperty("DepthFoldout");
             StepsDepth = serializedObject.FindProperty("StepsDepth");
             KeepCustomDepthValues = serializedObject.FindProperty("KeepCustomDepthValues");
             StairsMaterial = serializedObject.FindProperty("StairsMaterial");
@@ -143,10 +143,10 @@ namespace BoxStairsTool
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            bool stepsFoldout = StepsFoldout.boolValue;
-            StepsFoldout.boolValue = EditorGUILayout.Foldout(stepsFoldout, "Steps Depth");
+            bool depthFoldout = DepthFoldout.boolValue;
+            DepthFoldout.boolValue = EditorGUILayout.Foldout(depthFoldout, "Steps Depth");
 
-            if (StepsFoldout.boolValue)
+            if (DepthFoldout.boolValue)
             {
                 for (int i = 0; i < StepsDepth.arraySize - 1; i++)
                 {
