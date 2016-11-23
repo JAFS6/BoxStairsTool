@@ -81,7 +81,7 @@ namespace BoxStairsTool
         {
             // Initialization of parameters and structures
             Pivot = PivotType.Downstairs;
-            LastPivot = PivotType.Downstairs;
+            LastPivot = Pivot;
             StairsWidth = 1.0f;
             LastStairsWidth = StairsWidth;
             StairsHeight = 0.5f;
