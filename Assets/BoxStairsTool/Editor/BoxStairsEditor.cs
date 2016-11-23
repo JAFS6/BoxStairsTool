@@ -164,7 +164,7 @@ namespace BoxStairsTool
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(StairsMaterial);
+            EditorGUILayout.PropertyField(StairsMaterial); // Property: StairsMaterial
 
             // Steps Materials
 
@@ -175,7 +175,7 @@ namespace BoxStairsTool
             {
                 for (int i = 0; i < StepsMaterials.arraySize; i++)
                 {
-                    EditorGUILayout.PropertyField(StepsMaterials.GetArrayElementAtIndex(i));
+                    EditorGUILayout.PropertyField(StepsMaterials.GetArrayElementAtIndex(i)); // Property: StepsMaterials
                 }
             }
 
