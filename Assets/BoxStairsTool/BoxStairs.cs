@@ -42,6 +42,7 @@ namespace BoxStairsTool
         private float LastStairsWidth;
         [SerializeField]
         private float StairsHeight;
+        private float LastStairsHeight;
         [SerializeField]
         private float StairsDepth;
         private float LastStairsDepth;
@@ -51,6 +52,18 @@ namespace BoxStairsTool
         [SerializeField]
         private bool ThreeSides;
         private bool LastThreeSides;
+        [SerializeField]
+        private bool StairsHeightDrivedBySteps;
+        #pragma warning disable 414
+        [SerializeField]
+        private bool HeightFoldout; // The value of this property will be used and changed on BoxStairsEditor class
+        #pragma warning restore 414
+        [SerializeField]
+        private float[] StepsHeight;
+        [SerializeField]
+        private bool KeepCustomHeightValues;
+        [SerializeField]
+        private bool StairsDepthDrivedBySteps;
         #pragma warning disable 414
         [SerializeField]
         private bool DepthFoldout; // The value of this property will be used and changed on BoxStairsEditor class
@@ -85,6 +98,7 @@ namespace BoxStairsTool
             StairsWidth = 1.0f;
             LastStairsWidth = StairsWidth;
             StairsHeight = 0.5f;
+            LastStairsHeight = StairsHeight;
             StairsDepth = 1.0f;
             LastStairsDepth = StairsDepth;
             StepsNumber = 4;
@@ -92,15 +106,16 @@ namespace BoxStairsTool
             ThreeSides = false;
             LastThreeSides = ThreeSides;
 
+            StairsHeightDrivedBySteps = false;
+            HeightFoldout = false;
+            StepsHeight = new float[StepsNumber];
+            ApplyDefaultStepsHeight();
+            KeepCustomHeightValues = false;
+
+            StairsDepthDrivedBySteps = false;
             DepthFoldout = false;
             StepsDepth = new float[StepsNumber];
-            float defaultStepsDepth = StairsDepth / StepsNumber;
-
-            for (int i = 0; i < StepsNumber; i++)
-            {
-                StepsDepth[i] = defaultStepsDepth;
-            }
-
+            ApplyDefaultStepsDepth();
             KeepCustomDepthValues = false;
 
             StairsMaterial = null;
@@ -120,20 +135,18 @@ namespace BoxStairsTool
         public void CreateStairs ()
         {
             // Validate global parameters
-            StairsWidth = GuaranteeMinimumLength(StairsWidth);
+            StairsWidth  = GuaranteeMinimumLength(StairsWidth);
             StairsHeight = GuaranteeMinimumLength(StairsHeight);
-            StairsDepth = GuaranteeMinimumLength(StairsDepth);
+            StairsDepth  = GuaranteeMinimumLength(StairsDepth);
 
-            if (StepsNumber < 1)
-            {
-                StepsNumber = 1;
-            }
+            if (StepsNumber < 1) { StepsNumber = 1; } // Guarantee one step as minimum
 
             if (StepsNumber != LastStepsNumber) // If the number of steps has changed
             {
                 LastStepsNumber = StepsNumber;
                 // Update arrays
-                StepsDepth = UpdateStepsDepthArray();
+                StepsHeight    = UpdateStepsHeightArray();
+                StepsDepth     = UpdateStepsDepthArray();
                 StepsMaterials = UpdateStepsMaterialsArray();
             }
 
@@ -142,7 +155,6 @@ namespace BoxStairsTool
                 LastThreeSides = ThreeSides;
 
                 // Force StairsWidth and StairsDepth to have a relation 1:2
-
                 StairsWidth = StairsDepth * 2;
                 LastStairsWidth = StairsWidth;
             }
@@ -155,7 +167,17 @@ namespace BoxStairsTool
                 LastStairsDepth = StairsDepth;
             }
 
-            if (StairsDepth != LastStairsDepth)
+            if (StairsHeight != LastStairsHeight) // If StairsHeight has changed
+            {
+                LastStairsHeight = StairsHeight;
+
+                if (!KeepCustomHeightValues)
+                {
+                    ApplyDefaultStepsHeight();
+                }
+            }
+
+            if (StairsDepth != LastStairsDepth) // If StairsDepth has changed
             {
                 LastStairsDepth = StairsDepth;
 
@@ -164,16 +186,20 @@ namespace BoxStairsTool
                     StairsWidth = StairsDepth * 2;
                     LastStairsWidth = StairsWidth;
                 }
+
+                if (!KeepCustomDepthValues)
+                {
+                    ApplyDefaultStepsDepth();
+                }
             }
 
+            ConsolidateStepsHeight();
             ConsolidateStepsDepth();
-
             // If any child has been created, destroy it
             ClearChildObjects();
-
             // Create the new childs
             CreateBoxes();
-            
+
             AddSelectionBox();
         }
 
@@ -182,8 +208,21 @@ namespace BoxStairsTool
          */
         private void CreateBoxes ()
         {
-            float stepHeight = StairsHeight / StepsNumber;
-            float halfStepHeight = stepHeight / 2;
+            /*float stepHeight = StairsHeight / StepsNumber;
+            float halfStepHeight = stepHeight / 2;*/
+
+            // Calculate the cumulative steps height
+
+            float[] cumulativeStepsHeight = new float[StepsNumber];
+            float[] doubleCumulativeStepsHeight = new float[StepsNumber];
+            cumulativeStepsHeight[0] = StepsHeight[0];
+            doubleCumulativeStepsHeight[0] = StepsHeight[0] * 2;
+
+            for (int i = 1; i < StepsNumber; i++)
+            {
+                cumulativeStepsHeight[i] = cumulativeStepsHeight[i-1] + StepsHeight[i];
+                doubleCumulativeStepsHeight[i] = doubleCumulativeStepsHeight[i-1] + (StepsHeight[i] * 2);
+            }
 
             // Calculate the cumulative steps depth
 
@@ -198,6 +237,8 @@ namespace BoxStairsTool
                 doubleCumulativeStepsDepth[i] = doubleCumulativeStepsDepth[i-1] + (StepsDepth[i] * 2);
             }
 
+            // Create the boxes
+
             for (int i = 0; i < StepsNumber; i++)
             {
                 GameObject Step = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -209,18 +250,19 @@ namespace BoxStairsTool
                 float boxXscale = (ThreeSides) ? threeSidesWidth : StairsWidth;
                 float boxZscale = (i == 0) ? StairsDepth : StairsDepth - cumulativeStepsDepth[i-1];
 
-                Step.transform.localScale = new Vector3(boxXscale, stepHeight, boxZscale);
+                Step.transform.localScale = new Vector3(boxXscale, StepsHeight[i], boxZscale);
                 Step.transform.localRotation = Quaternion.identity;
+
+                float Yposition = (i == 0) ? StepsHeight[0] * 0.5f : StepsHeight[i] * 0.5f + cumulativeStepsHeight[i-1];
 
                 switch (Pivot)
                 {
                     case PivotType.Downstairs:
-                        Step.transform.localPosition = new Vector3(0, halfStepHeight + (i * stepHeight), StairsDepth - (boxZscale * 0.5f));
+                        Step.transform.localPosition = new Vector3(0, Yposition, StairsDepth - (boxZscale * 0.5f));
                         break;
 
                     case PivotType.Upstairs:
-                        int fixedIndex = StepsNumber - 1 - i;
-                        Step.transform.localPosition = new Vector3(0, -halfStepHeight - (fixedIndex * stepHeight), -(boxZscale * 0.5f));
+                        Step.transform.localPosition = new Vector3(0, -StairsHeight + Yposition, -(boxZscale * 0.5f));
                         break;
                 }
 
@@ -284,6 +326,55 @@ namespace BoxStairsTool
         private float GuaranteeMaximumLength (float value, float upperLimit)
         {
             return (value > upperLimit) ? upperLimit : value;
+        }
+
+        /*
+         * This method creates a new array for the new number of steps and conserve the step's height
+         * from the old array on the lower positions. If the new steps number is lower than before,
+         * the upper steps info will be discarded, if the new steps number is greater than before,
+         * a default height will be assigned to the new ones. This default height will be equal to
+         * half height of the last step.
+         */
+        private float[] UpdateStepsHeightArray ()
+        {
+            float[] NewStepsHeight = new float[StepsNumber];
+
+            if (!KeepCustomHeightValues)
+            {
+                float defaultStepsHeight = StairsHeight / StepsNumber;
+
+                for (int i=0; i < StepsNumber; i++)
+                {
+                    NewStepsHeight[i] = defaultStepsHeight;
+                }
+            }
+            else
+            {
+                int OldIndex = 0, NewIndex = 0;
+
+                while (OldIndex < StepsHeight.Length && NewIndex < StepsNumber)
+                {
+                    NewStepsHeight[NewIndex] = StepsHeight[OldIndex];
+
+                    NewIndex++;
+                    OldIndex++;
+                }
+
+                if (StepsNumber > StepsHeight.Length)
+                {
+                    float defaultStepsHeight = StepsHeight[StepsHeight.Length - 1] / 2;
+
+                    while (NewIndex < StepsNumber)
+                    {
+                        NewStepsHeight[NewIndex] = defaultStepsHeight;
+                        NewStepsHeight[NewIndex - 1] -= defaultStepsHeight;
+
+                        NewIndex++;
+                    }
+                }
+            }
+
+            return NewStepsHeight;
         }
 
         /*
@@ -386,10 +477,138 @@ namespace BoxStairsTool
         }
 
         /*
+         * This method consolidates the steps height to allow "push" steps up and down.
+         */
+        private void ConsolidateStepsHeight ()
+        {
+            float sum = 0;
+
+            for (int i=0; i < StepsNumber; i++)
+            {
+                if (StepsHeight[i] < 0)
+                {
+                    PushDown(i);
+                    StepsHeight[i] = 0;
+                }
+                if (!StairsHeightDrivedBySteps)
+                {
+                    StepsHeight[i] = GuaranteeMaximumLength(StepsHeight[i], StairsHeight);
+                }
+                PushUp(i);
+
+                sum += StepsHeight[i];
+            }
+
+            if (StairsHeightDrivedBySteps)
+            {
+                StairsHeight = sum;
+            }
+        }
+
+        /*
+         * This method fixes the height of the steps affected by the height of step i, from the first to stepIndex
+         */
+        private void PushDown (int stepIndex)
+        {
+            if (stepIndex > 0 && StepsHeight[stepIndex] < 0)
+            {
+                float heightDifference = Mathf.Abs(StepsHeight[stepIndex]);
+                StepsHeight[stepIndex] = 0;
+
+                for (int i = stepIndex - 1; i >= 0 && heightDifference > 0; i--)
+                {
+                    if (StepsHeight[i] > heightDifference)
+                    {
+                        StepsHeight[i] -= heightDifference;
+                        heightDifference = 0;
+                    }
+                    else if (StepsHeight[i] < heightDifference)
+                    {
+                        heightDifference -= StepsHeight[i];
+                        StepsHeight[i] = 0;
+                    }
+                    else
+                    {
+                        heightDifference = 0;
+                        StepsHeight[i] = 0;
+                    }
+                }
+            }
+        }
+
+        /*
+         * This method fixes the height of the steps affected by the height of step i, from the last to stepIndex
+         */
+        private void PushUp (int stepIndex)
+        {
+            if (stepIndex == StepsNumber - 1 && !StairsHeightDrivedBySteps)
+            {
+                /*
+                If stepIndex is the last step and StairsHeight is NOT drived by steps, this step's height
+                will be the space left between the penultimate step and StairsHeight
+                */
+
+                // Calculate the sum of all steps height except the last one
+                float cumulativeHeight = 0;
+
+                for (int i = 0; i < StepsNumber - 1; i++)
+                {
+                    cumulativeHeight += StepsHeight[i];
+                }
+
+                StepsHeight[StepsNumber - 1] = StairsHeight - cumulativeHeight;
+            }
+            else if (stepIndex < StepsNumber - 1)
+            {
+                if (!StairsHeightDrivedBySteps)
+                {
+                    // Check if the total height is greater than the StairsHeight
+
+                    float totalHeight = 0;
+
+                    for (int i = 0; i < StepsNumber; i++)
+                    {
+                        totalHeight += StepsHeight[i];
+                    }
+
+                    if (totalHeight > StairsHeight)
+                    {
+                        /* If totalHeight is greater than StairsHeight, the height of each step starting from
+                        the upper most step must be decreased. If that step's height reach 0, the next step
+                        will reduce its height */
+
+                        float heightDifference = totalHeight - StairsHeight;
+
+                        for (int i = StepsNumber - 1; i > stepIndex && heightDifference > 0; i--)
+                        {
+                            if (StepsHeight[i] > heightDifference)
+                            {
+                                StepsHeight[i] -= heightDifference;
+                                heightDifference = 0;
+                            }
+                            else if (StepsHeight[i] < heightDifference)
+                            {
+                                heightDifference -= StepsHeight[i];
+                                StepsHeight[i] = 0;
+                            }
+                            else
+                            {
+                                heightDifference = 0;
+                                StepsHeight[i] = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
          * This method consolidates the steps depth to allow "push" steps back and forth.
          */
         private void ConsolidateStepsDepth ()
         {
+            float sum = 0;
+
             for (int i=0; i < StepsNumber; i++)
             {
                 if (StepsDepth[i] < 0)
@@ -397,8 +616,18 @@ namespace BoxStairsTool
                     PushBack(i);
                     StepsDepth[i] = 0;
                 }
-                StepsDepth[i] = GuaranteeMaximumLength(StepsDepth[i], StairsDepth);
+                if (!StairsDepthDrivedBySteps)
+                {
+                    StepsDepth[i] = GuaranteeMaximumLength(StepsDepth[i], StairsDepth);
+                }
                 PushForth(i);
+
+                sum += StepsDepth[i];
+            }
+
+            if (StairsDepthDrivedBySteps)
+            {
+                StairsDepth = sum;
             }
         }
 
@@ -438,9 +667,14 @@ namespace BoxStairsTool
          */
         private void PushForth (int stepIndex)
         {
-            if (stepIndex == StepsNumber - 1)
+            if (stepIndex == StepsNumber - 1 && !StairsDepthDrivedBySteps)
             {
-                // Calculate the sum of all steps depth except the last ones
+                /*
+                If stepIndex is the last step and StairsDepth is NOT drived by steps, this step's depth
+                will be the space left between the penultimate step and StairsDepth
+                */
+
+                // Calculate the sum of all steps depth except the last one
                 float cumulativeDepth = 0;
 
                 for (int i = 0; i < StepsNumber - 1; i++)
@@ -450,49 +684,52 @@ namespace BoxStairsTool
 
                 StepsDepth[StepsNumber - 1] = StairsDepth - cumulativeDepth;
             }
-            else
+            else if (stepIndex < StepsNumber - 1)
             {
-                // Check if the total depth is greater than the StairsDepth
-
-                float totalDepth = 0;
-
-                for (int i = 0; i < StepsNumber; i++)
+                if (!StairsDepthDrivedBySteps)
                 {
-                    totalDepth += StepsDepth[i];
-                }
+                    // Check if the total depth is greater than the StairsDepth
 
-                if (totalDepth > StairsDepth)
-                {
-                    /* If totalDepth is greater than StairsDepth, the depth of each step starting from
-                    the upper most step must be decreased. If that step's depth reach 0, the next step
-                    will reduce its depth */
+                    float totalDepth = 0;
 
-                    float depthDifference = totalDepth - StairsDepth;
-
-                    for (int i = StepsNumber - 1; i > stepIndex && depthDifference > 0; i--)
+                    for (int i = 0; i < StepsNumber; i++)
                     {
-                        if (StepsDepth[i] > depthDifference)
+                        totalDepth += StepsDepth[i];
+                    }
+
+                    if (totalDepth > StairsDepth)
+                    {
+                        /* If totalDepth is greater than StairsDepth, the depth of each step starting from
+                        the upper most step must be decreased. If that step's depth reach 0, the next step
+                        will reduce its depth */
+
+                        float depthDifference = totalDepth - StairsDepth;
+
+                        for (int i = StepsNumber - 1; i > stepIndex && depthDifference > 0; i--)
                         {
-                            StepsDepth[i] -= depthDifference;
-                            depthDifference = 0;
-                        }
-                        else if (StepsDepth[i] < depthDifference)
-                        {
-                            depthDifference -= StepsDepth[i];
-                            StepsDepth[i] = 0;
-                        }
-                        else
-                        {
-                            depthDifference = 0;
-                            StepsDepth[i] = 0;
+                            if (StepsDepth[i] > depthDifference)
+                            {
+                                StepsDepth[i] -= depthDifference;
+                                depthDifference = 0;
+                            }
+                            else if (StepsDepth[i] < depthDifference)
+                            {
+                                depthDifference -= StepsDepth[i];
+                                StepsDepth[i] = 0;
+                            }
+                            else
+                            {
+                                depthDifference = 0;
+                                StepsDepth[i] = 0;
+                            }
                         }
                     }
                 }
             }
         }
-        
+
         /*
-         * This method creates a disabled BoxCollider which marks the volume defined by 
+         * This method creates a disabled BoxCollider which marks the volume defined by
          * StairsWidth, StairsHeight, StairsDepth.
          */
         private void AddSelectionBox ()
@@ -516,6 +753,28 @@ namespace BoxStairsTool
             VolumeBox.size = new Vector3(StairsWidth, StairsHeight, StairsDepth);
 
             VolumeBox.enabled = false;
+        }
+
+        private void ApplyDefaultStepsDepth ()
+        {
+            float defaultStepsDepth = StairsDepth / StepsNumber;
+
+            ApplyFloatValueToArray(defaultStepsDepth, StepsDepth);
+        }
+
+        private void ApplyDefaultStepsHeight ()
+        {
+            float defaultStepsHeight = StairsHeight / StepsNumber;
+
+            ApplyFloatValueToArray(defaultStepsHeight, StepsHeight);
+        }
+
+        private void ApplyFloatValueToArray (float value, float[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = value;
+            }
         }
     }
 }

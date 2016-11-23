@@ -38,6 +38,11 @@ namespace BoxStairsTool
         SerializedProperty StairsDepth;
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
+        SerializedProperty StairsHeightDrivedBySteps;
+        SerializedProperty HeightFoldout;
+        SerializedProperty StepsHeight;
+        SerializedProperty KeepCustomHeightValues;
+        SerializedProperty StairsDepthDrivedBySteps;
         SerializedProperty DepthFoldout;
         SerializedProperty StepsDepth;
         SerializedProperty KeepCustomDepthValues;
@@ -87,18 +92,23 @@ namespace BoxStairsTool
 
         private void OnEnable ()
         {
-            Pivot = serializedObject.FindProperty("Pivot");
-            StairsWidth = serializedObject.FindProperty("StairsWidth");
-            StairsHeight = serializedObject.FindProperty("StairsHeight");
-            StairsDepth = serializedObject.FindProperty("StairsDepth");
-            StepsNumber = serializedObject.FindProperty("StepsNumber");
-            ThreeSides = serializedObject.FindProperty("ThreeSides");
-            DepthFoldout = serializedObject.FindProperty("DepthFoldout");
-            StepsDepth = serializedObject.FindProperty("StepsDepth");
-            KeepCustomDepthValues = serializedObject.FindProperty("KeepCustomDepthValues");
-            StairsMaterial = serializedObject.FindProperty("StairsMaterial");
-            MaterialsFoldout = serializedObject.FindProperty("MaterialsFoldout");
-            StepsMaterials = serializedObject.FindProperty("StepsMaterials");
+            Pivot                     = serializedObject.FindProperty("Pivot");
+            StairsWidth               = serializedObject.FindProperty("StairsWidth");
+            StairsHeight              = serializedObject.FindProperty("StairsHeight");
+            StairsDepth               = serializedObject.FindProperty("StairsDepth");
+            StepsNumber               = serializedObject.FindProperty("StepsNumber");
+            ThreeSides                = serializedObject.FindProperty("ThreeSides");
+            StairsHeightDrivedBySteps = serializedObject.FindProperty("StairsHeightDrivedBySteps");
+            HeightFoldout             = serializedObject.FindProperty("HeightFoldout");
+            StepsHeight               = serializedObject.FindProperty("StepsHeight");
+            KeepCustomHeightValues    = serializedObject.FindProperty("KeepCustomHeightValues");
+            StairsDepthDrivedBySteps  = serializedObject.FindProperty("StairsDepthDrivedBySteps");
+            DepthFoldout              = serializedObject.FindProperty("DepthFoldout");
+            StepsDepth                = serializedObject.FindProperty("StepsDepth");
+            KeepCustomDepthValues     = serializedObject.FindProperty("KeepCustomDepthValues");
+            StairsMaterial            = serializedObject.FindProperty("StairsMaterial");
+            MaterialsFoldout          = serializedObject.FindProperty("MaterialsFoldout");
+            StepsMaterials            = serializedObject.FindProperty("StepsMaterials");
         }
 
         public override void OnInspectorGUI ()
@@ -106,59 +116,79 @@ namespace BoxStairsTool
             serializedObject.Update();
 
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(Pivot);
-            EditorGUILayout.PropertyField(StairsWidth);
-            EditorGUILayout.PropertyField(StairsHeight);
-            EditorGUILayout.PropertyField(StairsDepth);
-            GUI.enabled = false;
-            EditorGUILayout.PropertyField(StepsNumber);
-            GUI.enabled = true;
+            EditorGUILayout.PropertyField(Pivot); // Property: Pivot
+            EditorGUILayout.PropertyField(StairsWidth); // Property: StairsWidth
+
+            if (StairsHeightDrivedBySteps.boolValue) { GUI.enabled = false; }
+            EditorGUILayout.PropertyField(StairsHeight);  // Property: StairsHeight
+            GUI.enabled = true; // Restore GUI default state
+
+            if (StairsDepthDrivedBySteps.boolValue) { GUI.enabled = false; }
+            EditorGUILayout.PropertyField(StairsDepth); // Property: StairsDepth
+            GUI.enabled = true; // Restore GUI default state
+
+            GUI.enabled = false; // Only show the steps number
+            EditorGUILayout.PropertyField(StepsNumber); // Property: StepsNumber
+            GUI.enabled = true; // Restore GUI default state
+
+            // Show buttons to control steps number
+
             EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("+1"))
-            {
-                StepsNumber.intValue++;
-            }
-
-            if (GUILayout.Button("+10"))
-            {
-                StepsNumber.intValue += 10;
-            }
-
-            if (GUILayout.Button("-1"))
-            {
-                StepsNumber.intValue--;
-            }
-
-            if (GUILayout.Button("-10"))
-            {
-                StepsNumber.intValue -= 10;
-            }
-
+            if (GUILayout.Button("+1" )) { StepsNumber.intValue++;     }
+            if (GUILayout.Button("+10")) { StepsNumber.intValue += 10; }
+            if (GUILayout.Button("-1" )) { StepsNumber.intValue--;     }
+            if (GUILayout.Button("-10")) { StepsNumber.intValue -= 10; }
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.PropertyField(ThreeSides);
-            EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
+
+            EditorGUILayout.PropertyField(ThreeSides); // Property: ThreeSides
+
+            // Steps height
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            bool heightFoldout = HeightFoldout.boolValue;
+            HeightFoldout.boolValue = EditorGUILayout.Foldout(heightFoldout, "Steps Height");
+
+            if (HeightFoldout.boolValue)
+            {
+                EditorGUILayout.PropertyField(StairsHeightDrivedBySteps); // Property: StairsHeightDrivedBySteps
+
+                for (int i = 0; i < StepsHeight.arraySize - 1; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsHeight.GetArrayElementAtIndex(i)); // Property: StepsHeight
+                }
+
+                if (!StairsHeightDrivedBySteps.boolValue) { GUI.enabled = false; }
+                EditorGUILayout.PropertyField(StepsHeight.GetArrayElementAtIndex(StepsHeight.arraySize - 1));
+                GUI.enabled = true; // Restore GUI default state
+
+                EditorGUILayout.PropertyField(KeepCustomHeightValues); // Property: KeepCustomHeightValues
+            }
 
             // Steps depth
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
+
             bool depthFoldout = DepthFoldout.boolValue;
             DepthFoldout.boolValue = EditorGUILayout.Foldout(depthFoldout, "Steps Depth");
 
             if (DepthFoldout.boolValue)
             {
+                EditorGUILayout.PropertyField(StairsDepthDrivedBySteps); // Property: StairsDepthDrivedBySteps
+
                 for (int i = 0; i < StepsDepth.arraySize - 1; i++)
                 {
-                    EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(i));
+                    EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(i)); // Property: StepsDepth
                 }
 
-                GUI.enabled = false;
+                if (!StairsDepthDrivedBySteps.boolValue) { GUI.enabled = false; }
                 EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(StepsDepth.arraySize - 1));
-                GUI.enabled = true;
-            }
+                GUI.enabled = true; // Restore GUI default state
 
-            EditorGUILayout.PropertyField(KeepCustomDepthValues);
+                EditorGUILayout.PropertyField(KeepCustomDepthValues); // Property: KeepCustomDepthValues
+            }
 
             // Stairs Material
 
