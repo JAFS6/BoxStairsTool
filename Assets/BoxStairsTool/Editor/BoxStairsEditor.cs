@@ -213,15 +213,10 @@ namespace BoxStairsTool
 
             if (EditorGUI.EndChangeCheck())
             {
-                BoxStairs script;
-
-                for (int i = 0; i < targets.Length; i++)
-                {
-                    script = (BoxStairs)targets[i];
-                    Undo.SetCurrentGroupName("BoxStairs parameter change");
-                    Undo.undoRedoPerformed += script.CreateStairs;
-                    script.CreateStairs();
-                }
+                BoxStairs script = (BoxStairs)target;
+                Undo.SetCurrentGroupName("BoxStairs parameter change");
+                Undo.undoRedoPerformed += script.CreateStairs;
+                script.CreateStairs();
             }
 
             EditorGUILayout.Space();
