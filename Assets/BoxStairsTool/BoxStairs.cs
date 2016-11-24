@@ -208,9 +208,6 @@ namespace BoxStairsTool
          */
         private void CreateBoxes ()
         {
-            /*float stepHeight = StairsHeight / StepsNumber;
-            float halfStepHeight = stepHeight / 2;*/
-
             // Calculate the cumulative steps height
 
             float[] cumulativeStepsHeight = new float[StepsNumber];
