@@ -231,18 +231,7 @@ namespace BoxStairsTool
         private void FinalizeStairs ()
         {
             Undo.SetCurrentGroupName("Finalize stairs");
-
-            if (targets.Length == 1)
-            {
-                Undo.DestroyObjectImmediate(target);
-            }
-            else
-            {
-                for (int i = 0; i < targets.Length; i++)
-                {
-                    Undo.DestroyObjectImmediate(targets[i]);
-                }
-            }
+            Undo.DestroyObjectImmediate(target);
         }
     }
 }
