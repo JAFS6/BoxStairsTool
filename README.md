@@ -34,9 +34,6 @@ With the object selected, **choose** where do you want to be placed the **pivot*
 
 This tool accepts multi object editing.
 
-# Compatibility
-This tool has been tested on Unity3D version 5.3.6f1 and 5.4.0f3 on Windows and Mac.
-
 # Troubleshooting
 If you have any problem, question, suggestion or bug report, [open an issue](https://github.com/JAFS6/BoxStairsTool/issues/new) and we will try to solve it.
 
