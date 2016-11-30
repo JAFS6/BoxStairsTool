@@ -51,6 +51,7 @@ namespace BoxStairsTool
         SerializedProperty StepsMaterials;
 
         private const string DefaultName = "BoxStairs";
+        private bool FinalizeButtonPressed = false;
 
         [MenuItem("GameObject/3D Object/BoxStairs")]
         private static void CreateBoxStairsGO ()
@@ -109,6 +110,8 @@ namespace BoxStairsTool
             StairsMaterial            = serializedObject.FindProperty("StairsMaterial");
             MaterialsFoldout          = serializedObject.FindProperty("MaterialsFoldout");
             StepsMaterials            = serializedObject.FindProperty("StepsMaterials");
+
+            EditorApplication.update += Update;
         }
 
         public override void OnInspectorGUI ()
@@ -224,14 +227,33 @@ namespace BoxStairsTool
 
             if (GUILayout.Button("Finalize stairs"))
             {
-                FinalizeStairs();
+                FinalizeButtonPressed = true;
             }
         }
 
         private void FinalizeStairs ()
         {
             Undo.SetCurrentGroupName("Finalize stairs");
+            BoxStairs script = (BoxStairs)target;
+            GameObject go = script.gameObject;
+            BoxCollider bc = go.GetComponent<BoxCollider>();
+
+            if (bc != null)
+            {
+                Undo.DestroyObjectImmediate(bc);
+            }
+
             Undo.DestroyObjectImmediate(target);
+        }
+
+        private void Update ()
+        {
+            if (FinalizeButtonPressed)
+            {
+                FinalizeStairs();
+                FinalizeButtonPressed = false;
+                EditorApplication.update -= Update;
+            }
         }
     }
 }
