@@ -248,12 +248,16 @@ namespace BoxStairsTool
 
         private void Update ()
         {
+            #if (UNITY_EDITOR)
+
             if (FinalizeButtonPressed)
             {
                 FinalizeStairs();
                 FinalizeButtonPressed = false;
                 EditorApplication.update -= Update;
             }
+
+            #endif
         }
     }
 }
