@@ -43,4 +43,4 @@ If you want to help improve this tool, please test it and [create a new issue](h
 This tool is licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 # Author
-[Juan Antonio Fajardo Serrano](https://es.linkedin.com/in/jafs6)
+[Juan Antonio Fajardo Serrano](https://www.linkedin.com/in/jafs6)
