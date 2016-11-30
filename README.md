@@ -26,7 +26,11 @@ Click the **GameObject/3D Object > BoxStairs** button on the menu, or in the hie
 
 <img src="https://cloud.githubusercontent.com/assets/6010819/18685851/103ad5c6-7f7a-11e6-8d41-f749ea4a746d.JPG" alt="BoxStairs custom inspector image" height="300px">
 
-With the object selected, **choose** where do you want to be placed the **pivot** of the object, **edit** the Stairs **Width**, **Height** and **Depth** parameters to set the volume which will contain the stairs, the **Steps Number** parameter to set how many steps will have the stairs and check **Three Sides** parameter if you want stairs on three sides. Finally, **assign** a material to the Stairs **Material** slot. Play with the parameters until you get the desired design. If you want to **finalize the object**'s edition ability, click the finalize button and it will remain on the hierarchy as a group of boxes under a empty root.
+With the object selected, **choose** where do you want to be placed the **pivot** of the object. In order to see the selected handle correctly (Downstairs or Upstairs), you must select pivot option on the editor Gizmo Display Toggles.
+
+<img src="https://docs.unity3d.com/uploads/Main/HandlePositionButtons.png" alt="Unity Gizmo Display Toggles" height="100px">
+
+**Edit** the Stairs **Width**, **Height** and **Depth** parameters to set the volume which will contain the stairs, the **Steps Number** parameter to set how many steps will have the stairs and check **Three Sides** parameter if you want stairs on three sides. Finally, **assign** a material to the Stairs **Material** slot. Play with the parameters until you get the desired design. If you want to **finalize the object**'s edition ability, click the finalize button and it will remain on the hierarchy as a group of boxes under a empty root.
 
 This tool accepts multi object editing.
 
