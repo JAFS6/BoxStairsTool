@@ -32,7 +32,7 @@ With the object selected, **choose** where do you want to be placed the **pivot*
 
 **Edit** the Stairs **Width**, **Height** and **Depth** parameters to set the volume which will contain the stairs (this is represented with a green box when you select the GameObject), the **Steps Number** parameter (clicking over +1,+10,-1,-10 buttons) to set how many steps will have the stairs and check **Three Sides** parameter if you want stairs on three sides (Note that this option will fix the relation between Width and Depth, first one will be double of the second one). Finally, **assign** a material to the Stairs **Material** slot. Play with the parameters until you get the desired design. If you want to **finalize the object**'s edition ability, click the finalize button and it will remain on the hierarchy as a group of boxes under a empty root.
 
-This tool doesn't accepts multi object editing.
+This tool doesn't accept multi object editing.
 
 # Advanced Usage
 
