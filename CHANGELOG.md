@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] - 2016-12-01
+### Added
+- Ability to override individual step height.
+- Ability to override individual step depth.
+- Ability to override individual step material.
+- Ability to modify Stairs Height in base to steps height.
+- Ability to modify Stairs Depth in base to steps depth.
+- "Selection box", a disabled box collider to represent the overall volume of the object determined by the values of Stairs Width, Height and Depth.
+- Package manual to the repo.
+- Explanation of the new features on the README.
+
+### Fixed
+- Explanation on the README file about how set the editor properly to see the pivot handle correctly.
+
 ## [1.3.1] - 2016-10-06
 ### Added
 - Version file to the package.
