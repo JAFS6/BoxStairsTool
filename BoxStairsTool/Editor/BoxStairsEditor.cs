@@ -111,6 +111,7 @@ namespace BoxStairsTool
             MaterialsFoldout          = serializedObject.FindProperty("MaterialsFoldout");
             StepsMaterials            = serializedObject.FindProperty("StepsMaterials");
 
+            EditorApplication.update -= Update;
             EditorApplication.update += Update;
         }
 
