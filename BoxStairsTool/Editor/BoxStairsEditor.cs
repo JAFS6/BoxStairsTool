@@ -27,18 +27,31 @@ using UnityEditor;
 namespace BoxStairsTool
 {
     [CustomEditor(typeof(BoxStairs))]
-    [CanEditMultipleObjects]
     public sealed class BoxStairsEditor : Editor
     {
+        private const int StepsNumberLabelFieldWidth = 115;
+        private const int StepsNumberValueLabelFieldWidth = 30;
+
         SerializedProperty Pivot;
         SerializedProperty StairsWidth;
         SerializedProperty StairsHeight;
         SerializedProperty StairsDepth;
         SerializedProperty StepsNumber;
         SerializedProperty ThreeSides;
+        SerializedProperty StairsHeightDrivedBySteps;
+        SerializedProperty HeightFoldout;
+        SerializedProperty StepsHeight;
+        SerializedProperty KeepCustomHeightValues;
+        SerializedProperty StairsDepthDrivedBySteps;
+        SerializedProperty DepthFoldout;
+        SerializedProperty StepsDepth;
+        SerializedProperty KeepCustomDepthValues;
         SerializedProperty StairsMaterial;
+        SerializedProperty MaterialsFoldout;
+        SerializedProperty StepsMaterials;
 
         private const string DefaultName = "BoxStairs";
+        private bool FinalizeButtonPressed = false;
 
         [MenuItem("GameObject/3D Object/BoxStairs")]
         private static void CreateBoxStairsGO ()
@@ -80,13 +93,26 @@ namespace BoxStairsTool
 
         private void OnEnable ()
         {
-            Pivot = serializedObject.FindProperty("Pivot");
-            StairsWidth = serializedObject.FindProperty("StairsWidth");
-            StairsHeight = serializedObject.FindProperty("StairsHeight");
-            StairsDepth = serializedObject.FindProperty("StairsDepth");
-            StepsNumber = serializedObject.FindProperty("StepsNumber");
-            ThreeSides = serializedObject.FindProperty("ThreeSides");
-            StairsMaterial = serializedObject.FindProperty("StairsMaterial");
+            Pivot                     = serializedObject.FindProperty("Pivot");
+            StairsWidth               = serializedObject.FindProperty("StairsWidth");
+            StairsHeight              = serializedObject.FindProperty("StairsHeight");
+            StairsDepth               = serializedObject.FindProperty("StairsDepth");
+            StepsNumber               = serializedObject.FindProperty("StepsNumber");
+            ThreeSides                = serializedObject.FindProperty("ThreeSides");
+            StairsHeightDrivedBySteps = serializedObject.FindProperty("StairsHeightDrivedBySteps");
+            HeightFoldout             = serializedObject.FindProperty("HeightFoldout");
+            StepsHeight               = serializedObject.FindProperty("StepsHeight");
+            KeepCustomHeightValues    = serializedObject.FindProperty("KeepCustomHeightValues");
+            StairsDepthDrivedBySteps  = serializedObject.FindProperty("StairsDepthDrivedBySteps");
+            DepthFoldout              = serializedObject.FindProperty("DepthFoldout");
+            StepsDepth                = serializedObject.FindProperty("StepsDepth");
+            KeepCustomDepthValues     = serializedObject.FindProperty("KeepCustomDepthValues");
+            StairsMaterial            = serializedObject.FindProperty("StairsMaterial");
+            MaterialsFoldout          = serializedObject.FindProperty("MaterialsFoldout");
+            StepsMaterials            = serializedObject.FindProperty("StepsMaterials");
+
+            EditorApplication.update -= Update;
+            EditorApplication.update += Update;
         }
 
         public override void OnInspectorGUI ()
@@ -94,50 +120,145 @@ namespace BoxStairsTool
             serializedObject.Update();
 
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(Pivot);
-            EditorGUILayout.PropertyField(StairsWidth);
-            EditorGUILayout.PropertyField(StairsHeight);
-            EditorGUILayout.PropertyField(StairsDepth);
-            EditorGUILayout.PropertyField(StepsNumber);
-            EditorGUILayout.PropertyField(ThreeSides);
-            EditorGUILayout.LabelField("Step Height: " + (StairsHeight.floatValue / StepsNumber.intValue));
-            EditorGUILayout.PropertyField(StairsMaterial);
+            EditorGUILayout.PropertyField(Pivot); // Property: Pivot
+            EditorGUILayout.PropertyField(StairsWidth); // Property: StairsWidth
+
+            if (StairsHeightDrivedBySteps.boolValue) { GUI.enabled = false; }
+            EditorGUILayout.PropertyField(StairsHeight);  // Property: StairsHeight
+            GUI.enabled = true; // Restore GUI default state
+
+            if (StairsDepthDrivedBySteps.boolValue) { GUI.enabled = false; }
+            EditorGUILayout.PropertyField(StairsDepth); // Property: StairsDepth
+            GUI.enabled = true; // Restore GUI default state
+
+            GUI.enabled = false; // Only show the steps number
+            EditorGUILayout.PropertyField(StepsNumber); // Property: StepsNumber
+            GUI.enabled = true; // Restore GUI default state
+
+            // Show buttons to control steps number
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+1" )) { StepsNumber.intValue++;     }
+            if (GUILayout.Button("+10")) { StepsNumber.intValue += 10; }
+            if (GUILayout.Button("-1" )) { StepsNumber.intValue--;     }
+            if (GUILayout.Button("-10")) { StepsNumber.intValue -= 10; }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.PropertyField(ThreeSides); // Property: ThreeSides
+
+            // Steps height
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            bool heightFoldout = HeightFoldout.boolValue;
+            HeightFoldout.boolValue = EditorGUILayout.Foldout(heightFoldout, "Steps Height");
+
+            if (HeightFoldout.boolValue)
+            {
+                EditorGUILayout.PropertyField(StairsHeightDrivedBySteps); // Property: StairsHeightDrivedBySteps
+
+                for (int i = 0; i < StepsHeight.arraySize - 1; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsHeight.GetArrayElementAtIndex(i)); // Property: StepsHeight
+                }
+
+                if (!StairsHeightDrivedBySteps.boolValue) { GUI.enabled = false; }
+                EditorGUILayout.PropertyField(StepsHeight.GetArrayElementAtIndex(StepsHeight.arraySize - 1));
+                GUI.enabled = true; // Restore GUI default state
+
+                EditorGUILayout.PropertyField(KeepCustomHeightValues); // Property: KeepCustomHeightValues
+            }
+
+            // Steps depth
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            bool depthFoldout = DepthFoldout.boolValue;
+            DepthFoldout.boolValue = EditorGUILayout.Foldout(depthFoldout, "Steps Depth");
+
+            if (DepthFoldout.boolValue)
+            {
+                EditorGUILayout.PropertyField(StairsDepthDrivedBySteps); // Property: StairsDepthDrivedBySteps
+
+                for (int i = 0; i < StepsDepth.arraySize - 1; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(i)); // Property: StepsDepth
+                }
+
+                if (!StairsDepthDrivedBySteps.boolValue) { GUI.enabled = false; }
+                EditorGUILayout.PropertyField(StepsDepth.GetArrayElementAtIndex(StepsDepth.arraySize - 1));
+                GUI.enabled = true; // Restore GUI default state
+
+                EditorGUILayout.PropertyField(KeepCustomDepthValues); // Property: KeepCustomDepthValues
+            }
+
+            // Stairs Material
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(StairsMaterial); // Property: StairsMaterial
+
+            // Steps Materials
+
+            bool materialsfoldout = MaterialsFoldout.boolValue;
+            MaterialsFoldout.boolValue = EditorGUILayout.Foldout(materialsfoldout, "Steps Materials");
+
+            if (MaterialsFoldout.boolValue)
+            {
+                for (int i = 0; i < StepsMaterials.arraySize; i++)
+                {
+                    EditorGUILayout.PropertyField(StepsMaterials.GetArrayElementAtIndex(i)); // Property: StepsMaterials
+                }
+            }
+
             serializedObject.ApplyModifiedProperties();
 
             if (EditorGUI.EndChangeCheck())
             {
-                BoxStairs script;
-
-                for (int i = 0; i < targets.Length; i++)
-                {
-                    script = (BoxStairs)targets[i];
-                    Undo.SetCurrentGroupName("BoxStairs parameter change");
-                    Undo.undoRedoPerformed += script.CreateStairs;
-                    script.CreateStairs();
-                }
+                BoxStairs script = (BoxStairs)target;
+                Undo.SetCurrentGroupName("BoxStairs parameter change");
+                Undo.undoRedoPerformed += script.CreateStairs;
+                script.CreateStairs();
             }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
             if (GUILayout.Button("Finalize stairs"))
             {
-                FinalizeStairs();
+                FinalizeButtonPressed = true;
             }
         }
 
         private void FinalizeStairs ()
         {
             Undo.SetCurrentGroupName("Finalize stairs");
+            BoxStairs script = (BoxStairs)target;
+            GameObject go = script.gameObject;
+            BoxCollider bc = go.GetComponent<BoxCollider>();
 
-            if (targets.Length == 1)
+            if (bc != null)
             {
-                Undo.DestroyObjectImmediate(target);
+                Undo.DestroyObjectImmediate(bc);
             }
-            else
+
+            Undo.DestroyObjectImmediate(target);
+        }
+
+        private void Update ()
+        {
+            #if (UNITY_EDITOR)
+
+            if (FinalizeButtonPressed)
             {
-                for (int i = 0; i < targets.Length; i++)
-                {
-                    Undo.DestroyObjectImmediate(targets[i]);
-                }
+                FinalizeStairs();
+                FinalizeButtonPressed = false;
+                EditorApplication.update -= Update;
             }
+
+            #endif
         }
     }
 }
